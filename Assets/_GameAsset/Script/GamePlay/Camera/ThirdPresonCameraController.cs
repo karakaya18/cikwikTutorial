@@ -28,6 +28,4 @@ public class ThirdPresonCameraController : MonoBehaviour
       }
        
     }
-    
-
 }
