@@ -1,9 +1,11 @@
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using System;
 
 public class PlayerControler : MonoBehaviour
 {
+    public event Action OnPlayerJumped;
 
     [Header("References")]
     [SerializeField] private Transform _orientationTransfrom;
@@ -48,6 +50,14 @@ public class PlayerControler : MonoBehaviour
         _playerRigidbody = GetComponent<Rigidbody>();
         _playerRigidbody.freezeRotation = true;
     }
+
+    /*private void Start()
+    {
+        _playerController.OnPlayerJumped += PlayerControler_OnPlayerJumped; 
+    }
+*/
+   
+
     private void Update()
     {
         SetInputs();
@@ -55,6 +65,11 @@ public class PlayerControler : MonoBehaviour
         SetPlayerDrag();
         LimitPlayerSpeed();
     }
+   /* private void PlayerControler_OnPlayerJumped()
+    {
+         _playerAnimator.SetBool(Consts.PlayerAnimations.IS_JUMPING, true);
+            }
+            */
     private void SetInputs()
     {
         _horizantalInput = Input.GetAxisRaw("Horizontal");
@@ -68,7 +83,7 @@ public class PlayerControler : MonoBehaviour
         else if (Input.GetKeyDown(_movementKey))
         {
             _isSliding = false;
-            
+
         }
 
         else if (Input.GetKey(_jumpKey) && _canJump && IsGrounded())
@@ -80,7 +95,7 @@ public class PlayerControler : MonoBehaviour
 
         }
 
-      
+
     }
     private void SetStates()
     {
@@ -142,7 +157,8 @@ public class PlayerControler : MonoBehaviour
     }
 
     private void SetPlayerJumping()
-    {
+    { 
+        OnPlayerJumped?.Invoke();
         _playerRigidbody.linearVelocity = new Vector3(_playerRigidbody.linearVelocity.x, 0f, _playerRigidbody.linearVelocity.z);
         _playerRigidbody.AddForce(transform.up * _jumpForce, ForceMode.Impulse);
     }
